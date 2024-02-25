@@ -1,4 +1,4 @@
-import { TextInput,Button, Alert, Modal } from 'flowbite-react'
+import { TextInput,Button, Alert, Modal,Spinner } from 'flowbite-react'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import React, { useEffect, useRef, useState } from 'react'
 import {HiOutlineExclamationCircle} from 'react-icons/hi'
@@ -7,8 +7,9 @@ import { app } from '../firebase';
 import {CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css' 
 import { updateStart,updateFailure,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess } from '../redux/User/userSlice.js';
+import { Link } from 'react-router-dom'
 export default function DashProfile() {
-    const {currentUser,error}=useSelector(state=>state.user)
+    const {currentUser,error,loading}=useSelector(state=>state.user)
     const [imageFile,setImageFile]=useState(null);
     const [imageFileUrl,setImageFileUrl]=useState(null);
     const [imageFileUploading,setImageFileUploading]=useState(false);
@@ -159,9 +160,26 @@ const handleSignOut=async()=>{
            <TextInput onChange={handleChange} type='text' id='username' placeholder='username' defaultValue={currentUser?.username}/>
            <TextInput  onChange={handleChange}type='email' id='email' placeholder='email' defaultValue={currentUser?.email}/>
            <TextInput  onChange={handleChange}type='password' id='password' placeholder='password'/>
-           <Button type='submit' gradientDuoTone='purpleToBlue' outline>
-            Update
+           <Button type='submit' gradientDuoTone='purpleToBlue' outline disabled={loading||imageFileUploading}>
+            {
+              loading?(
+                <>
+                <Spinner size='sm'/>
+                <span>Loading...</span>
+                </>
+              ):'Update'
+            }
            </Button>
+           {
+            currentUser?.isAdmin && (
+              <Link to={'/create-post'}>
+                <Button type='button' gradientDuoTone='purpleToPink' className='w-full'>
+                Create a post
+              </Button>
+              </Link>
+              
+            )
+           }
         </form>
         <div className="text-red-500 flex justify-between mt-5">
           <span className=' cursor-pointer' onClick={()=>setShowModal(true)}>Delete Account</span>
