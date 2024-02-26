@@ -37,7 +37,7 @@ if(!validPassword){
   return  next(errorHandler(400,'Wrong credientials'));//we used wrong creditential msg instead of being specific to what is incorrect because we don't want to give hacker a hint which one is incorrect
 }
 const token=jwt.sign(
-    { id:validUser._id,isAdmin:validUser.isAsmin },process.env.JWT_SECRET
+    { id:validUser._id,isAdmin:validUser.isAdmin },process.env.JWT_SECRET
 );
 const {password:pass,...rest}=validUser._doc;//._doc gives the js object containing user data in javascript object format
 res.status(200).cookie('access_token',token,{httpOnly:true}).json(rest)
