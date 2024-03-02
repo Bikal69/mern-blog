@@ -7,8 +7,9 @@ import { app } from '../firebase';
 import {CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css' 
 import { updateStart,updateFailure,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess } from '../redux/User/userSlice.js';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 export default function DashProfile() {
+  const navigate=useNavigate();
     const {currentUser,error,loading}=useSelector(state=>state.user)
     const [imageFile,setImageFile]=useState(null);
     const [imageFileUrl,setImageFileUrl]=useState(null);
@@ -81,6 +82,12 @@ const res=await fetch(`/api/user/update/${currentUser?._id}`,{
   body:JSON.stringify(formData)
 });
 const data=await res.json();
+//if user is unauthorized then logout user(in the case when cookie expires and user tries to modify profile)
+if(res.status===401){
+handleSignOut();
+  navigate('/sign-in');
+
+}
 if(!res.ok){
     dispatch(updateFailure(data.message));
     setUpdateUserError(data.message);
@@ -94,6 +101,7 @@ dispatch(updateFailure(error.message));
 setUpdateUserError(error.message);
   }
 }
+//delete user function
 const handleDeleteUser=async()=>{
 setShowModal(false);
 try{
@@ -112,6 +120,7 @@ dispatch(deleteUserFailure(error.message))
 }
 }
 const handleSignOut=async()=>{
+  setShowModal(true);
   try{
     const res=await fetch('/api/user/signout',{
       method:'POST',
@@ -183,7 +192,7 @@ const handleSignOut=async()=>{
         </form>
         <div className="text-red-500 flex justify-between mt-5">
           <span className=' cursor-pointer' onClick={()=>setShowModal(true)}>Delete Account</span>
-          <span className=' cursor-pointer' onClick={handleSignOut}>Sign Out</span>
+          <span className=' cursor-pointer' onClick={()=>setShowModal(true)}>Sign Out</span>
         </div>
         {
           updateUserSuccess&&<Alert color='success' className='mt-5'>
@@ -207,6 +216,23 @@ const handleSignOut=async()=>{
               <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want to delete your account?</h3>
               <div className="flex justify-center gap-4">
                 <Button color='failure' onClick={handleDeleteUser}>
+                  Yes I am sure
+                </Button>
+                <Button color='gray' onClick={()=>setShowModal(false)}>
+                  No,cancel
+                </Button>
+              </div>
+            </div>
+          </Modal.Body>
+          </Modal>
+          <Modal show={showModal} onClose={()=>setShowModal(false)} popup size='md'>
+          <Modal.Header/>
+          <Modal.Body>
+            <div className="text-center">
+              <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto'/>
+              <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want to signout your account?</h3>
+              <div className="flex justify-center gap-4">
+                <Button color='failure' onClick={handleSignOut}>
                   Yes I am sure
                 </Button>
                 <Button color='gray' onClick={()=>setShowModal(false)}>
