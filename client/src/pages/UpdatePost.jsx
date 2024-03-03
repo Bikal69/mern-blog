@@ -1,22 +1,42 @@
+
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import {CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css'
 import {getDownloadURL, getStorage, uploadBytesResumable,ref} from 'firebase/storage';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useNavigate,useParams } from 'react-router-dom';
 import {app} from '../firebase.js';
-import { signOutFailure, signOutSuccess } from '../redux/User/userSlice.js';
-export default function CreatePost() {
+import { useSelector } from 'react-redux';
+export default function UpdatePost() {
     const [file,setFile]=useState(null);
     const[imageUploadProgress,setImageUploadProgress]=useState(null);
     const[imageUploadError,setImageUploadError]=useState(null);
     const [formData,setFormData]=useState({});
     const [publishError,setPublishError]=useState(null);
-    const dispatch=useDispatch();
     const navigate=useNavigate();
+    const{postId}=useParams();
+    const {currentUser}=useSelector((state)=>state.user)
+useEffect(()=>{
+    try{
+        const fetchPost=async()=>{
+            const res=await fetch(`/api/post/getposts?postId=${postId}`)
+            const data=await res.json();
+            if(!res.ok){
+                console.log(data.message);
+                setPublishError(data.message);
+                return;
+            }if(res.ok){
+                setPublishError(null);
+                setFormData(data.posts[0])
+            }
+        };
+        fetchPost();
+    }catch(error){
+
+    }
+},[postId])
 
     const handleUploadImage=async()=>{
         try{
@@ -53,8 +73,8 @@ export default function CreatePost() {
     const handleSubmit=async(e)=>{
 e.preventDefault();
 try{
-    const res=await fetch('/api/post/create',{
-        method:'POST',
+    const res=await fetch(`/api/post/updatepost/${postId}/${currentUser._id}`,{
+        method:'PUT',
         headers:{
             'Content-Type':'application/json',
         },
@@ -62,10 +82,6 @@ try{
     });
     const data=await res.json();
     if(!res.ok){
-        if(res.status===401){
-            handleSignOut();
-            return;
-        }
         setPublishError(data.message)
         return
     }
@@ -77,29 +93,14 @@ if(res.ok){
 
 }
     }
-    const handleSignOut=async()=>{
-        try{
-          const res=await fetch('/api/user/signout',{
-            method:'POST',
-          });
-          const data=await res.json();
-          if(!res.ok){
-            console.log(data.message);
-          }else{
-            dispatch(signOutSuccess());
-          }
-        }catch(error){
-        dispatch(signOutFailure(error))
-        }
-      }
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
-        <h1 className='text-center text-3xl my-7 font-semibold'>Create a post</h1>
+        <h1 className='text-center text-3xl my-7 font-semibold'>Update Post</h1>
         <form className='flex
          flex-col gap-4' onSubmit={handleSubmit}>
             <div className="flex flex-col gap-4 sm:flex-row justify-between">
-                <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e)=>setFormData({...formData,title:e.target.value})}/>
-                <Select onChange={(e)=>setFormData({...formData,category:e.target.value})}>
+                <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={(e)=>setFormData({...formData,title:e.target.value})} value={formData.title}/>
+                <Select onChange={(e)=>setFormData({...formData,category:e.target.value})} value={formData.category}>
                     <option value='uncategorized'>
                         Select a category
                     </option>
@@ -138,9 +139,9 @@ if(res.ok){
                     <img src={formData.image} alt="upload" className='w-full h-72 object-cover' />
                 )
             }
-            <ReactQuill theme='snow' placeholder='write Something...' className='h-72 mb-12' required onChange={(value)=>setFormData({...formData,content:value})}/>
+            <ReactQuill theme='snow' placeholder='write Something...' className='h-72 mb-12' required onChange={(value)=>setFormData({...formData,content:value})} value={formData.content}/>
             <Button type='submit' gradientDuoTone='purpleToPink'>
-                Publish
+                Update Post
             </Button>
             {
                 publishError&&(

@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import { app } from '../firebase';
 import {CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css' 
-import { updateStart,updateFailure,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess } from '../redux/User/userSlice.js';
+import { updateStart,updateFailure,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess,signOutFailure} from '../redux/User/userSlice.js';
 import { Link, useNavigate } from 'react-router-dom'
 export default function DashProfile() {
   const navigate=useNavigate();
@@ -132,7 +132,7 @@ const handleSignOut=async()=>{
       dispatch(signOutSuccess());
     }
   }catch(error){
-    console.log(error.message);
+  dispatch(signOutFailure(error))
   }
 }
   return (

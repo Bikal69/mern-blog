@@ -52,8 +52,12 @@ state.error=null;
             state.currentUser=null;
             state.error=null;
             state.loading=false;
+        },
+        signOutFailure:(state,action)=>{
+            state.loading=false;
+            state.error=action.payload
         }
     }
 });
-export const {signInStart,signInFailure,SignInSuccess,updateFailure,updateStart,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess}=userSlice.actions;
+export const {signInStart,signInFailure,SignInSuccess,updateFailure,updateStart,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess,signOutFailure}=userSlice.actions;
 export default userSlice.reducer;
