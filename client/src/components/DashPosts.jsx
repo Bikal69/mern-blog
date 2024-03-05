@@ -8,13 +8,13 @@ export default function DashPosts() {
   const {currentUser}=useSelector((state)=>state.user);
   const [showToast, setShowToast] = useState(false);
   const [userPosts,setUserPosts]=useState([]);
-  const [showMore,setShowMore]=useState(true);
+  const [showMore,setShowMore]=useState(false);
   const  [showMoreLoading,setShowMoreLoading]=useState(false);
   const [showModal,setShowModal]=useState(false);
 const [PostIdToDelete,setPostIdToDelete]=useState('')
   useEffect(()=>{
-    console.log('render')
 const fetchPosts=async()=>{
+ 
   try{
     const res=await fetch(`/api/post/getposts?userId=${currentUser._id}`)
     const data=await res.json()
@@ -22,7 +22,9 @@ if(res.ok){
   setUserPosts(data.posts)
   if(data.posts.length<9){
     setShowMore(false);
+    return;
   }
+  setShowMore(true);
 }
   }catch(error){
     console.log(error.message)
