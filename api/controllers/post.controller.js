@@ -45,7 +45,7 @@ const oneMonthAgo=new Date(
     now.getDate()
 );
 const lastMonthPosts=await Post.countDocuments({
-    createdAt:{$gt:oneMonthAgo}
+    createdAt:{$gte:oneMonthAgo}
 });
 res.status(200).json({
     posts,
