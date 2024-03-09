@@ -64,6 +64,7 @@ try{
     if(!res.ok){
         if(res.status===401){
             handleSignOut();
+            navigate('/sign-in');
             return;
         }
         setPublishError(data.message)
