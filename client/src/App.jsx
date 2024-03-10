@@ -13,6 +13,7 @@ import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute'
 import UpdatePost from "./pages/UpdatePost"
 import PostPage from "./pages/PostPage.jsx"
 import ScrollToTop from "./components/ScrollToTop.jsx"
+import SearchPage from './pages/SearchPage.jsx'
 export default function App() {
   return (
   <BrowserRouter>
@@ -23,6 +24,7 @@ export default function App() {
     <Route path='/about' element={<About/>}/>
     <Route path='/sign-in' element={<Signin/>}/>
     <Route path='/sign-up' element={<SignUp/>}/>
+    <Route path='/search' element={<SearchPage/>}/>
     <Route element={<PrivateRoute/>}>
     <Route path='/dashboard' element={<Dashboard/>}/>
     </Route>
