@@ -3,18 +3,41 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CallToAction from '../components/CallToAction';
 import PostCard from '../components/PostCard'
+import { signOutFailure, signOutSuccess } from '../redux/User/userSlice';
 export default function Home() {
   const [posts,setPosts]=useState([]);
   const dispatch=useDispatch();
   useEffect(()=>{
+const checkAuthentication=async()=>{
+  const res=await fetch('/api/auth/authenticateUser');
+    if(res.status===401){
+      handleSignOut();
+      return;
+    }
+}
    const fetchPosts=async()=>{
     const res=await fetch(`/api/post/getposts`);
     const data=await res.json();
     setPosts(data.posts)
-    console.log(posts)
    }
    fetchPosts();
+   checkAuthentication();
   },[])
+  const handleSignOut=async()=>{
+    try{
+      const res=await fetch('/api/user/signout',{
+        method:'POST',
+      });
+      const data=await res.json();
+      if(!res.ok){
+        console.log(data.message);
+      }else{
+        dispatch(signOutSuccess());
+      }
+    }catch(error){
+    dispatch(signOutFailure(error))
+    }
+  }
   return (
     <div>
       <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto ">

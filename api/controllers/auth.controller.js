@@ -16,7 +16,7 @@ password: await hashedPassword
     });
     try{
         await newUser.save()
-        res.json('signup successfull')
+        res.status(200).json('signup successfull')
     }catch(err){
         next(err)
     }
@@ -37,7 +37,7 @@ if(!validPassword){
   return  next(errorHandler(400,'Wrong credientials'));//we used wrong creditential msg instead of being specific to what is incorrect because we don't want to give hacker a hint which one is incorrect
 }
 const token=jwt.sign(
-    { id:validUser._id,isAdmin:validUser.isAdmin },process.env.JWT_SECRET
+    { id:validUser._id,isAdmin:validUser.isAdmin },process.env.JWT_SECRET,{expiresIn:'30d'}
 );
 const {password:pass,...rest}=validUser._doc;//._doc gives the js object containing user data in javascript object format
 res.status(200).cookie('access_token',token,{httpOnly:true}).json(rest)
@@ -73,4 +73,16 @@ export const google=async(req,res,next)=>{
     }catch(error){
 next(error);
     }
+}
+export const isUserSignedin=async(req,res)=>{
+    const token=req.cookies.access_token;
+    if(!token){
+       return res.status(401).json('No token,Unauthorized');
+    }
+    jwt.verify(token,process.env.JWT_SECRET,(err,user)=>{
+        if(err){
+         return   res.status(401).json('user token has expired')
+        }
+
+    })
 }
