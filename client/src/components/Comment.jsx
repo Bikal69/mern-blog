@@ -25,7 +25,6 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
   const [showDeleteModal,setShowDeleteModal]=useState(false);
   const [replyToDelete,setReplyToDelete]=useState(null);
   const noOfRepliesOnDbInitially=comment.replies.length;
-  console.log("i am triggered")
   useEffect(() => {
     //fetch commenter details
     const getUser = async () => {
@@ -75,10 +74,8 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
         if (res.ok) {
           setNoOfReplies((prevState)=>prevState+1);
           const data=await res.json();
-          // setReplies((prevReplies)=>[data,...prevReplies]);
           setReplies([...replies,data]);
           setIsReplying(false)
-          // onEdit(comment, editedContent);
         }
       } catch (error) {
         console.log(error.message);

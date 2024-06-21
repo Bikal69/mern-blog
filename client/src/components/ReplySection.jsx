@@ -13,30 +13,6 @@ export default function ReplySection({reply,user,onEditReply,onDeleteReply,onLik
  const [replyContent,setReplyContent]=useState('');
  const [replyingTo,setReplyingTo]=useState(null);
  const [isReplying,setIsReplying]=useState(false);
- console.log(reply)
-  //reply posting
-//   const handlePostReply=async()=>{
-//     try {
-//         const res = await fetch(`/api/comment/postReply/${comment._id}`, {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({
-//             content: replyContent,
-//           }),
-//         });
-//         if (res.ok) {
-//           const data=await res.json();
-//           setReplies(data,...replies);
-//           setIsReplying(false);
-//           // onEdit(comment, editedContent);
-//         }
-//       } catch (error) {
-//         console.log(error.message);
-//       }
-// }
-
 const handleReply=()=>{
   setIsReplying((prevState)=>!prevState);
   setReplyingTo(user.username);
@@ -82,10 +58,8 @@ const handleReply=()=>{
         if (res.ok) {
           setNoOfReplies((prevState)=>prevState+1);
           const data=await res.json();
-          // setReplies((prevReplies)=>[data,...prevReplies]);
           setReplies([...replies,data]);
           setIsReplying(false)
-          // onEdit(comment, editedContent);
         }
       } catch (error) {
         console.log(error.message);
@@ -158,7 +132,6 @@ const handleReply=()=>{
                     ' ' +
                     (reply.numberOfLikes === 1 ? 'like' : 'likes')}
               </p>
-              {/* <Reply comment={comment} onLike={handleLike} onEdit={handleEdit} onDelete={onDelete}/> */}
               {currentUser &&
                 (currentUser._id === reply.user._id || currentUser.isAdmin) && (
                   <>
