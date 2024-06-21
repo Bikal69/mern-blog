@@ -20,7 +20,7 @@ const handleReply=()=>{
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedContent(comment.content);
+    setEditedContent(reply.content);
   };
 
   const handleSaveReply = async () => {
