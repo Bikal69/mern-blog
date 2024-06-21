@@ -22,7 +22,10 @@ app.use('/api/auth',authRoutes);
 app.use('/api/post',postRoutes);
 app.use('/api/comment',commentRoutes)
 console.log(__dirname)
-// app.use(express.static(path.join(__dirname,'/client/dist')));
+app.use(express.static(path.join(__dirname,'/client/dist')));
+app.get('*',(req,res)=>{
+    res.sendFile(path.join(__dirname,'client','dist','index.html'))
+});
 //error handling middleware
 app.use((err,req,res,next)=>{
     const statusCode=err.statusCode||500;
