@@ -34,7 +34,7 @@ export default function CommentSection({ postId }) {
       if (res.ok) {
         setComment('');
         setCommentError(null);
-        setComments([data, ...comments]);
+        setComments([data,...comments,]);
       }
     } catch (error) {
       setCommentError(error.message);
@@ -84,7 +84,7 @@ export default function CommentSection({ postId }) {
     }
   };
 
-  const handleEdit = async (comment, editedContent) => {
+  const handleEdit = (comment, editedContent) => {
     setComments(
       comments.map((c) =>
         c._id === comment._id ? { ...c, content: editedContent } : c

@@ -8,6 +8,7 @@ import {CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css' 
 import { updateStart,updateFailure,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess,signOutFailure} from '../redux/User/userSlice.js';
 import { Link, useNavigate } from 'react-router-dom'
+import useAuthentication from '../context/AuthenticationContext.js'
 export default function DashProfile() {
   const navigate=useNavigate();
     const {currentUser,error,loading}=useSelector(state=>state.user)
@@ -29,10 +30,12 @@ export default function DashProfile() {
         setImageFileUrl(URL.createObjectURL(file));
       }
     }
+    const {checkAuthentication}=useAuthentication();
 useEffect(()=>{
   if(imageFile){
     uploadImage();
   }
+  checkAuthentication();
 },[imageFile])
 const uploadImage=async()=>{
   setImageFileUploading(true);

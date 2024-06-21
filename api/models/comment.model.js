@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 const  commentSchema=new mongoose.Schema({
     content:{
         type:String,
@@ -16,6 +16,12 @@ const  commentSchema=new mongoose.Schema({
         type:Array,
         default:[],
     },
+    replies:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Reply'
+        }
+    ],
     numberOfLikes:{
         type:Number,
         default:0,
