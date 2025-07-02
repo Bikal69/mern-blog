@@ -1,7 +1,7 @@
 import { Button, Select, TextInput } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import PostCard from '../components/PostCard';
+import PostCard from '../components/posts/PostCard';
 
 export default function searchPage() {
   const location=useLocation();

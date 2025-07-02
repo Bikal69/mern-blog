@@ -35,6 +35,8 @@ app.use((err,req,res,next)=>{
         message
     })
 })
+{/*to keep render server alive */}
+setInterval(()=>{},1000*60*13); //13 minutes
 app.listen(3000,()=>{
     console.log('server is running on port 3000')
 })

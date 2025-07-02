@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CallToAction from '../components/CallToAction';
-import PostCard from '../components/PostCard'
-import useAuthentication from '../context/AuthenticationContext'
+import PostCard from '../components/posts/PostCard'
 export default function Home() {
   const [posts,setPosts]=useState([]);
   const dispatch=useDispatch();
-  const {checkAuthentication}=useAuthentication();
+
   useEffect(()=>{
 
    const fetchPosts=async()=>{
@@ -16,8 +15,7 @@ export default function Home() {
     setPosts(data.posts)
    }
    fetchPosts();
-   checkAuthentication();
-  },[posts])
+  },[])
  
   return (
     <div>

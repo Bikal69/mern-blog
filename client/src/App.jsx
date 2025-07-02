@@ -14,36 +14,12 @@ import UpdatePost from "./pages/UpdatePost"
 import PostPage from "./pages/PostPage.jsx"
 import ScrollToTop from "./components/ScrollToTop.jsx"
 import SearchPage from './pages/SearchPage.jsx'
-import {AuthenticationProvider} from './context/AuthenticationContext.js'
 import { signOutFailure, signOutSuccess } from "./redux/User/userSlice.js"
 import { useDispatch } from "react-redux"
-import { useCallback } from "react"
 export default function App() {
   const dispatch=useDispatch();
-  const checkAuthentication=useCallback(async()=>{
-    const res=await fetch('/api/auth/authenticateUser');
-      if(res.status===401){
-        handleSignOut();
-        return;
-      }
-  },[]);//using useCallback hook to prevent unwanted refrence change of checkAuthentication Function
-  const handleSignOut=useCallback(async()=>{
-    try{
-      const res=await fetch('/api/user/signout',{
-        method:'POST',
-      });
-      const data=await res.json();
-      if(!res.ok){
-        console.log(data.message);
-      }else{
-        dispatch(signOutSuccess());
-      }
-    }catch(error){
-    dispatch(signOutFailure(error))
-    }
-  },[]);//using useCallback hook to prevent unwanted refrence change of handleSignOut Function
+
   return (
-    <AuthenticationProvider value={{checkAuthentication}}>
   <BrowserRouter>
   <ScrollToTop/>
   <Header/>
@@ -65,6 +41,5 @@ export default function App() {
   </Routes>
   <FooterComponent/>
   </BrowserRouter>
-  </AuthenticationProvider>
   )
 }
